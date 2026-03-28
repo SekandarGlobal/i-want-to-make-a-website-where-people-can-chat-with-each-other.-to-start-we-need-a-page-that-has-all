@@ -248,6 +248,10 @@ function getConversationId(uid1, uid2) {
 }
 
 function startOrOpenConversation(otherUser) {
+  if (!currentUser || !currentUserData) {
+    showToast('Please wait, loading your profile...');
+    return;
+  }
   const convId = getConversationId(currentUser.uid, otherUser.id);
   const convRef = db.collection('conversations').doc(convId);
 
@@ -263,10 +267,18 @@ function startOrOpenConversation(otherUser) {
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         lastMessage: null,
         lastMessageTime: null
-      }).then(() => openConversation(convId));
+      }).then(() => {
+        openConversation(convId);
+      }).catch(err => {
+        console.error('Error creating conversation:', err);
+        showToast('Failed to create conversation: ' + err.message);
+      });
     } else {
       openConversation(convId);
     }
+  }).catch(err => {
+    console.error('Error checking conversation:', err);
+    showToast('Failed to open conversation: ' + err.message);
   });
 }
 
@@ -310,6 +322,9 @@ function loadConversations() {
         item.onclick = () => openConversation(doc.id);
         list.appendChild(item);
       });
+    }, err => {
+      console.error('Error loading conversations:', err);
+      showToast('Failed to load conversations: ' + err.message);
     });
 }
 
@@ -318,10 +333,18 @@ function openConversation(convId) {
   if (messagesUnsub) messagesUnsub();
 
   db.collection('conversations').doc(convId).get().then(doc => {
+    if (!doc.exists) {
+      showToast('Conversation not found');
+      activeConversationId = null;
+      return;
+    }
     activeConversationData = { id: doc.id, ...doc.data() };
     renderChatHeader();
     loadMessages();
     loadConversations(); // refresh active state
+  }).catch(err => {
+    console.error('Error opening conversation:', err);
+    showToast('Failed to load conversation: ' + err.message);
   });
 }
 
@@ -391,6 +414,9 @@ function loadMessages() {
       });
 
       area.scrollTop = area.scrollHeight;
+    }, err => {
+      console.error('Error loading messages:', err);
+      showToast('Failed to load messages: ' + err.message);
     });
 }
 
@@ -457,12 +483,17 @@ function sendMessage() {
   };
 
   db.collection('conversations').doc(activeConversationId)
-    .collection('messages').add(msgData);
+    .collection('messages').add(msgData).catch(err => {
+      console.error('Error sending message:', err);
+      showToast('Failed to send message: ' + err.message);
+    });
 
   // Update last message on conversation
   db.collection('conversations').doc(activeConversationId).update({
     lastMessage: text,
     lastMessageTime: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(err => {
+    console.error('Error updating conversation:', err);
   });
 
   input.value = '';
@@ -644,6 +675,26 @@ function createGroup() {
     closeGroupModal();
     openConversation(docRef.id);
   });
+}
+
+// ========== TOAST NOTIFICATIONS ==========
+
+function showToast(message, type = 'error') {
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    document.body.appendChild(container);
+  }
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('show'));
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
 }
 
 // ========== UTILITIES ==========

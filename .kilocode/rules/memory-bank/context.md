@@ -14,6 +14,9 @@ The template is a clean Next.js 16 starter with TypeScript and Tailwind CSS 4. I
 - [x] ESLint configuration
 - [x] Memory bank documentation
 - [x] Recipe system for common features
+- [x] Added error handling to all Firestore operations in chat flow (scripts.js)
+- [x] Added toast notification system for user-facing error messages
+- [x] Fixed invalid CSS value (justify-content: stretch → flex-start)
 
 ## Current Structure
 
@@ -85,3 +88,4 @@ export async function GET() {
 | Date | Changes |
 |------|---------|
 | Initial | Template created with base setup |
+| 2026-03-28 | Fixed chat opening bug: added error handling + toast notifications to scripts.js, fixed invalid CSS in style.css |
