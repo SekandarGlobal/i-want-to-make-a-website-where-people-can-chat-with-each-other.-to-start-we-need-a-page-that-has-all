@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coinzo Chat</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- LANDING PAGE -->
+  <div id="page-landing" class="page active">
+    <div class="landing-container">
+      <h1 class="logo">COINZO</h1>
+      <p class="tagline">Connect. Chat. Collaborate.</p>
+      <div class="landing-buttons">
+        <button class="btn btn-primary" onclick="showPage('page-signin')">Sign In</button>
+        <button class="btn btn-outline" onclick="showPage('page-signup')">Sign Up</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIGN IN PAGE -->
+  <div id="page-signin" class="page">
+    <div class="auth-container">
+      <h2>Sign In</h2>
+      <form id="signin-form" onsubmit="handleSignIn(event)">
+        <input type="email" id="signin-email" placeholder="Email" required>
+        <input type="password" id="signin-password" placeholder="Password" required>
+        <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+      </form>
+      <div class="divider"><span>or</span></div>
+      <button class="btn btn-google btn-full" onclick="handleGoogleAuth()">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+        Continue with Google
+      </button>
+      <p class="switch-link">Don't have an account? <a href="#" onclick="showPage('page-signup')">Sign Up</a></p>
+    </div>
+  </div>
+
+  <!-- SIGN UP PAGE -->
+  <div id="page-signup" class="page">
+    <div class="auth-container">
+      <h2>Sign Up</h2>
+      <form id="signup-form" onsubmit="handleSignUp(event)">
+        <input type="email" id="signup-email" placeholder="Email" required>
+        <input type="password" id="signup-password" placeholder="Password" required>
+        <button type="submit" class="btn btn-primary btn-full">Sign Up</button>
+      </form>
+      <div class="divider"><span>or</span></div>
+      <button class="btn btn-google btn-full" onclick="handleGoogleAuth()">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+        Continue with Google
+      </button>
+      <p class="switch-link">Already have an account? <a href="#" onclick="showPage('page-signin')">Sign In</a></p>
+    </div>
+  </div>
+
+  <!-- SETUP NAME PAGE -->
+  <div id="page-setup-name" class="page">
+    <div class="auth-container">
+      <h2>What's your name?</h2>
+      <p class="setup-subtitle">This is how others will see you</p>
+      <form id="setup-name-form" onsubmit="handleSetupName(event)">
+        <input type="text" id="setup-name" placeholder="Your name" required>
+        <button type="submit" class="btn btn-primary btn-full">Continue</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- SETUP USERNAME PAGE -->
+  <div id="page-setup-username" class="page">
+    <div class="auth-container">
+      <h2>Choose a username</h2>
+      <p class="setup-subtitle">Others can find you by your username</p>
+      <form id="setup-username-form" onsubmit="handleSetupUsername(event)">
+        <input type="text" id="setup-username" placeholder="Username" required pattern="[a-zA-Z0-9_]+" title="Only letters, numbers, and underscores">
+        <button type="submit" class="btn btn-primary btn-full">Start Chatting</button>
+      </form>
+      <p id="username-error" class="error-msg" style="display:none"></p>
+    </div>
+  </div>
+
+  <!-- CHAT PAGE -->
+  <div id="page-chat" class="page">
+    <div class="chat-layout">
+      <!-- Sidebar -->
+      <div class="chat-sidebar">
+        <div class="sidebar-header">
+          <h2>COINZO</h2>
+          <button class="btn-icon" onclick="handleSignOut()" title="Sign Out">&#x2190;</button>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="user-search" placeholder="Search by username or email..." oninput="handleSearch(this.value)">
+        </div>
+        <div id="search-results" class="search-results"></div>
+        <button class="btn btn-outline btn-full" onclick="showCreateGroup()" style="margin:8px">+ Create Group</button>
+        <div class="conversations-list" id="conversations-list"></div>
+      </div>
+
+      <!-- Chat Main Area -->
+      <div class="chat-main" id="chat-main">
+        <div class="chat-placeholder">
+          <h3>Select a conversation</h3>
+          <p>Search for users or select an existing chat to start messaging</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATE GROUP MODAL -->
+  <div id="group-modal" class="modal" style="display:none">
+    <div class="modal-content">
+      <h3>Create Group</h3>
+      <input type="text" id="group-name-input" placeholder="Group name">
+      <div class="group-members-area">
+        <p class="label">Add members (search and click to add):</p>
+        <input type="text" id="group-member-search" placeholder="Search users..." oninput="handleGroupSearch(this.value)">
+        <div id="group-search-results" class="search-results"></div>
+        <div id="group-selected-members" class="selected-members"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeGroupModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="createGroup()">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="scripts.js"></script>
+</body>
+</html>
